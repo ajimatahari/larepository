@@ -1,0 +1,35 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Support\ServiceProvider;
+
+class DummyClass extends ServiceProvider
+{
+    /**
+    * Interfaces and concrete implementations.
+    *
+    * @var array
+    */
+    private $repositoryBindings = [];
+
+    /**
+     * Bootstrap the application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        //
+    }
+
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+}
