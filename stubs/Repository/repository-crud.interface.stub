@@ -1,0 +1,19 @@
+<?php
+
+namespace DummyNamespace;
+
+/**
+ * Interface DummyClass
+ */
+interface DummyClass
+{
+    public function create(array $inputData): bool;
+
+    public function findAll(): array;
+
+    public function findOne(int $id): array;
+
+    public function update(int $id, array $updateData): bool;
+
+    public function delete(int $id): bool;
+}

@@ -1,0 +1,88 @@
+<?php
+
+namespace DummyNamespace;
+
+use InterfaceNamespaceDummy\DummyInterface;
+use DummyModelNamespace;
+
+/**
+ * Class DummyClass
+ */
+class DummyClass implements DummyInterface
+{
+    /**
+     * The model to be used for database interaction.
+     *
+     * @var User
+     */
+    private $DummyModelVarName;
+
+    /**
+     * TestRepoRepository constructor.
+     *
+     * @param User $userModel
+     */
+    public function __construct(DummyModelClassName $DummyModelVarName)
+    {
+        $this->DummyModelVarName = $DummyModelVarName;
+    }
+
+    /**
+     * Creates a new entry with the provided data.
+     *
+     * @param array $inputData
+     * @return bool
+     */
+    public function create(array $inputData): bool
+    {
+        return $this->DummyModelVarName->fill($inputData)->save();
+    }
+
+    /**
+     * Retrieves all entries.
+     *
+     * @return array
+     */
+    public function findAll(): array
+    {
+        return $this->DummyModelVarName->all()->toArray();
+    }
+
+    /**
+     * Retrieves single entry with provided id.
+     *
+     * @param int $id Id of the entry to be updated
+     * @return array
+     */
+    public function findOne(int $id): array
+    {
+        return $this->DummyModelVarName->find($id)->toArray();
+    }
+
+    /**
+     * Updates the entry with provided data
+     * via provided id.
+     *
+     * @param int $id Id of the entry to be updated
+     * @param array $updateData Data of attributes to be updated
+     * @return bool
+     */
+    public function update(int $id, array $updateData): bool
+    {
+        /** @var $model DummyModelClassName */
+        $model = $this->DummyModelVarName->find($id);
+
+        return $model->update($updateData);
+    }
+
+    /**
+     * Deletes entry with provided id.
+     *
+     * @param int $id Id of the entry to be deleted
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        return $this->DummyModelVarName->find($id)->delete();
+    }
+}
