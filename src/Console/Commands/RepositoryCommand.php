@@ -3,8 +3,7 @@
 namespace Mola\Larepository\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Mola\Larepository\LarepositoryServiceProvider;
 
 class RepositoryCommand extends GeneratorCommand
 {
@@ -32,10 +31,16 @@ class RepositoryCommand extends GeneratorCommand
     protected $type = 'Repository';
 
     /**
+     * The name of the repository provider.
+     *
+     * @var string
+     */
+    public static $providerName = 'RepositoryServiceProvider';
+
+    /**
      * Execute the console command.
      *
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function handle()
     {
@@ -64,10 +69,10 @@ class RepositoryCommand extends GeneratorCommand
     protected function getStub(): string
     {
         if ($this->hasOption('model')) {
-            return __DIR__ . '/stubs/Repository/repository-crud.stub';
+            return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-crud.stub';
         }
 
-        return __DIR__ . '/stubs/Repository/repository.stub';
+        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub';
     }
 
     /**
@@ -78,7 +83,7 @@ class RepositoryCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return $rootNamespace . '\\' . config('repository.repository_path');
+        return $rootNamespace . '\\' . config('repository.repository_path', 'Repositories');
     }
 
     /**
@@ -144,8 +149,8 @@ class RepositoryCommand extends GeneratorCommand
     protected function getInterfaceNamespace(): string
     {
         return $this->rootNamespace()
-            . config('repository.contracts_path')
-            . '\\' . config('repository.repository_path')
+            . config('repository.contracts_path', 'Contracts')
+            . '\\' . config('repository.repository_path', 'Repositories')
             . '\\' . $this->getNamespace($this->getNameInput());
     }
 
@@ -157,8 +162,8 @@ class RepositoryCommand extends GeneratorCommand
     private function getModelNamespace(): string
     {
         return $this->rootNamespace()
-            . config('repository.model_path')
-            . '\\' . $this->option('model');
+            . config('repository.model_path', '')
+            . "\\" . $this->option('model');
     }
 
     /**
@@ -182,7 +187,7 @@ class RepositoryCommand extends GeneratorCommand
      */
     private function getProviderNamespace(): string
     {
-        return $this->rootNamespace() . 'Providers';
+        return $this->rootNamespace() . config('repository.provider_path', 'Providers');
     }
 
     /**
@@ -192,14 +197,13 @@ class RepositoryCommand extends GeneratorCommand
      */
     private function getProviderName(): string
     {
-        return 'RepositoryServiceProvider';
+        return self::$providerName;
     }
 
     /**
      * Adds new entry to service providers bindings-array
      * or creates service provider with bindings-array.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @return void
      */
     private function createProviderBindings()
@@ -248,7 +252,7 @@ class RepositoryCommand extends GeneratorCommand
     private function buildBindingsString(): string
     {
         return '\\' . $this->getInterfaceNamespace()
-            . '\\' . $this->getClassFromNameInput($this->getNameInput()) . 'Interface::class => \\'
+            . $this->getClassFromNameInput($this->getNameInput()) . "Interface::class => \\"
             . $this->getDefaultNamespace(str_replace('\\', '', $this->rootNamespace()))
             . '\\' . $this->getNameInput() . '::class';
     }
@@ -261,18 +265,5 @@ class RepositoryCommand extends GeneratorCommand
     private function retrieveProviderPath(): string
     {
         return $this->getPath($this->getProviderNamespace() . '\\' . $this->getProviderName());
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the new repository'],
-            ['model', InputOption::VALUE_OPTIONAL, 'Name of the model to use in the repository']
-        ];
     }
 }
