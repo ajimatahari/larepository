@@ -3,6 +3,7 @@
 namespace Mola\Larepository\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Mola\Larepository\LarepositoryServiceProvider;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -13,7 +14,9 @@ class InterfaceMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:interface';
+    protected $signature = 'make:interface
+                            {name : The name of the new interface}
+                            {--crud : Add repository crud-methods}';
 
     /**
      * The console command description.
@@ -37,10 +40,10 @@ class InterfaceMakeCommand extends GeneratorCommand
     protected function getStub(): string
     {
         if (!empty($this->option('crud'))) {
-            return __DIR__ . '/stubs/Repository/repository-crud.interface.stub';
+            return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-crud.interface.stub';
         }
 
-        return __DIR__ . '/stubs/Repository/repository.interface.stub';
+        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.interface.stub';
     }
 
     /**
@@ -51,7 +54,7 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return $rootNamespace . '\\' . config('repository.contracts_path');
+        return $rootNamespace . '\\' . config('repository.contracts_path', 'Contracts');
     }
 
     /**
@@ -62,18 +65,5 @@ class InterfaceMakeCommand extends GeneratorCommand
     protected function getNameInput(): string
     {
         return trim($this->argument('name')) . $this->type;
-    }
-
-    /**
-     * Get the console command arguments.
-     *
-     * @return array
-     */
-    protected function getArguments()
-    {
-        return [
-            ['name', InputArgument::REQUIRED, 'The name of the new interface'],
-            ['crud', InputOption::VALUE_OPTIONAL, 'Add repository crud-methods']
-        ];
     }
 }
