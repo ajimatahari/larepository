@@ -2,6 +2,8 @@
 
 namespace DummyNamespace;
 
+use Illuminate\Database\Eloquent\Collection;
+
 /**
  * Interface DummyClass
  */
@@ -9,9 +11,9 @@ interface DummyClass
 {
     public function create(array $inputData): bool;
 
-    public function findAll(): array;
+    public function findAll(): Collection;
 
-    public function findOne(int $id): array;
+    public function findOne(int $id);
 
     public function update(int $id, array $updateData): bool;
 

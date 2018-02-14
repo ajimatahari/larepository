@@ -2,8 +2,9 @@
 
 namespace DummyNamespace;
 
-use InterfaceNamespaceDummy\DummyInterface;
+use InterfaceNamespaceDummyDummyInterface;
 use DummyModelNamespace;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * Class DummyClass
@@ -13,7 +14,7 @@ class DummyClass implements DummyInterface
     /**
      * The model to be used for database interaction.
      *
-     * @var User
+     * @var DummyModelClassName
      */
     private $DummyModelVarName;
 
@@ -41,22 +42,22 @@ class DummyClass implements DummyInterface
     /**
      * Retrieves all entries.
      *
-     * @return array
+     * @return Collection
      */
-    public function findAll(): array
+    public function findAll(): Collection
     {
-        return $this->DummyModelVarName->all()->toArray();
+        return $this->DummyModelVarName->all();
     }
 
     /**
      * Retrieves single entry with provided id.
      *
      * @param int $id Id of the entry to be updated
-     * @return array
+     * @return DummyModelClassName
      */
-    public function findOne(int $id): array
+    public function findOne(int $id): DummyModelClassName
     {
-        return $this->DummyModelVarName->find($id)->toArray();
+        return $this->DummyModelVarName->find($id);
     }
 
     /**
