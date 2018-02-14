@@ -2,12 +2,20 @@
 
 namespace Mola\Larepository;
 
+use Illuminate\Console\DetectsApplicationNamespace;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Mola\Larepository\Console\Commands\InterfaceMakeCommand;
 use Mola\Larepository\Console\Commands\RepositoryCommand;
 
 class LarepositoryServiceProvider extends ServiceProvider
 {
+    use DetectsApplicationNamespace;
+
+    /**
+     * @var string
+     */
+    public static $packageLocation = '';
     /**
      * Bootstrap the application services.
      *
@@ -15,9 +23,18 @@ class LarepositoryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        self::$packageLocation = dirname(__DIR__);
+
         $this->publishes([
-            dirname(__DIR__).'/config/repository.php' => config_path('repository.php')
-        ]);
+            self::$packageLocation.'/config/repository.php' => config_path('repository.php')
+        ], 'config');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                InterfaceMakeCommand::class,
+                RepositoryCommand::class
+            ]);
+        }
     }
 
     /**
@@ -27,9 +44,11 @@ class LarepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->commands([
-            InterfaceMakeCommand::class,
-            RepositoryCommand::class
-        ]);
+        $files = $this->app->make(Filesystem::class);
+        $provider = app_path('Providers/'.RepositoryCommand::$providerName.'.php');
+
+        if ($files->exists($provider)) {
+            $this->app->register($this->getAppNamespace().'Providers\\'.RepositoryCommand::$providerName);
+        }
     }
 }
