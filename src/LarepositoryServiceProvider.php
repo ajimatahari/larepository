@@ -29,6 +29,7 @@ class LarepositoryServiceProvider extends ServiceProvider
             self::$packageLocation.'/config/repository.php' => config_path('repository.php')
         ], 'config');
 
+        // Register commands
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InterfaceMakeCommand::class,
@@ -47,6 +48,7 @@ class LarepositoryServiceProvider extends ServiceProvider
         $files = $this->app->make(Filesystem::class);
         $provider = app_path('Providers/'.RepositoryCommand::$providerName.'.php');
 
+        // Register repository provider if created
         if ($files->exists($provider)) {
             $this->app->register($this->getAppNamespace().'Providers\\'.RepositoryCommand::$providerName);
         }
