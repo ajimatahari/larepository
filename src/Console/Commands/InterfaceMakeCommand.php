@@ -15,8 +15,7 @@ class InterfaceMakeCommand extends GeneratorCommand
      * @var string
      */
     protected $signature = 'make:interface
-                            {name : The name of the new interface}
-                            {--crud : Add repository crud-methods}';
+                            {name : The name of the new interface}';
 
     /**
      * The console command description.
@@ -39,10 +38,6 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        if (!empty($this->option('crud'))) {
-            return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-crud.interface.stub';
-        }
-
         return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.interface.stub';
     }
 

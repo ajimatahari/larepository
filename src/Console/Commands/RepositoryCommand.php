@@ -12,7 +12,7 @@ class RepositoryCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:repository 
+    protected $signature = 'make:repository
                             {name : The name of the new repository}
                             {--model= : Name of the model to use in the repository}';
 
