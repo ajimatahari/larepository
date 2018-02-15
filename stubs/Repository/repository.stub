@@ -2,7 +2,7 @@
 
 namespace DummyNamespace;
 
-use InterfaceNamespaceDummy\DummyInterface;
+use InterfaceNamespaceDummyDummyInterface;
 
 class DummyClass implements DummyInterface
 {
