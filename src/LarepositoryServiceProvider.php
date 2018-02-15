@@ -6,7 +6,7 @@ use Illuminate\Console\DetectsApplicationNamespace;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 use Mola\Larepository\Console\Commands\InterfaceMakeCommand;
-use Mola\Larepository\Console\Commands\RepositoryCommand;
+use Mola\Larepository\Console\Commands\RepositoryMakeCommand;
 
 class LarepositoryServiceProvider extends ServiceProvider
 {
@@ -33,7 +33,7 @@ class LarepositoryServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 InterfaceMakeCommand::class,
-                RepositoryCommand::class
+                RepositoryMakeCommand::class
             ]);
         }
     }
@@ -46,11 +46,11 @@ class LarepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         $files = $this->app->make(Filesystem::class);
-        $provider = app_path('Providers/'.RepositoryCommand::$providerName.'.php');
+        $provider = app_path('Providers/'.RepositoryMakeCommand::$providerName.'.php');
 
         // Register repository provider if created
         if ($files->exists($provider)) {
-            $this->app->register($this->getAppNamespace().'Providers\\'.RepositoryCommand::$providerName);
+            $this->app->register($this->getAppNamespace().'Providers\\'.RepositoryMakeCommand::$providerName);
         }
     }
 }
