@@ -1,0 +1,128 @@
+<?php
+
+namespace DummyNamespace;
+
+use InterfaceNamespaceDummyDummyInterface;
+use InterfaceNamespaceDummy\DummyInterface;
+use DummyModelNamespace;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Container\Container;
+
+/**
+ * Class BaseRepository
+ */
+abstract class BaseRepository implements BaseRepositoryInterface
+{
+    /**
+     * The model to be used for database interaction.
+     *
+     * @var Model|Builder
+     */
+    private $model;
+
+    /**
+    * Instance of the application container.
+    *
+    * @var Container
+    */
+    private $container;
+
+    /**
+     * TestRepoRepository constructor.
+     *
+     * @param Container $container
+     */
+    public function __construct(Container $container)
+    {
+        $this->container = $container;
+
+        $this->model = $this->retrieveModel();
+    }
+
+    /**
+    * Returns name of provided model.
+    *
+    * @return string
+    */
+    public abstract function getModel(): string;
+
+    /**
+    * Retrieves model-instance from application container.
+    *
+    * @return Model
+    */
+    private function retrieveModel(): Model
+    {
+        $model = $this->container->make($this->getModel());
+
+        if (!$model instanceof Model) {
+            throw new ModelNotFoundException("Provided class must be an instance of Illuminate\\Database\\Eloquent\\Model");
+        }
+
+        return $model;
+    }
+
+    /**
+     * Creates a new entry with the provided data.
+     *
+     * @param array $inputData
+     * @return bool
+     */
+    public function create(array $inputData): bool
+    {
+        return $this->model->fill($inputData)->save();
+    }
+
+    /**
+     * Retrieves all entries.
+     *
+     * @return Collection
+     */
+    public function findAll(): Collection
+    {
+        return $this->model->all();
+    }
+
+    /**
+     * Retrieves single entry with provided id.
+     *
+     * @param int $id Id of the entry to be updated
+     * @return Model
+     */
+    public function findOne(int $id): Model
+    {
+        return $this->model->newQuery()->find($id);
+    }
+
+    /**
+     * Updates the entry with provided data
+     * via provided id.
+     *
+     * @param int $id Id of the entry to be updated
+     * @param array $updateData Data of attributes to be updated
+     * @return bool
+     */
+    public function update(int $id, array $updateData): bool
+    {
+        $record = $this->model->newQuery()->find($id);
+
+        if (!empty($record)) {
+            return $record->update($updateData);
+        }
+
+        throw new ModelNotFoundException("No model found to update");
+    }
+
+    /**
+     * Deletes entry with provided id.
+     *
+     * @param int $id Id of the entry to be deleted
+     * @return bool
+     */
+    public function delete(int $id): bool
+    {
+        return $this->model->newQuery()->find($id)->delete();
+    }
+}
