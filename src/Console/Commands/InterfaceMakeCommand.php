@@ -38,7 +38,11 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.interface.stub';
+        if (str_contains($this->getNameInput(), config('repository.repository_path', 'Repositories'))) {
+            return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.interface.stub';
+        }
+
+        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/interface.stub';
     }
 
     /**
@@ -49,7 +53,7 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace): string
     {
-        return $rootNamespace . '\\' . config('repository.contracts_path', 'Contracts');
+        return $rootNamespace . "\\" . config('repository.contracts_path', 'Contracts');
     }
 
     /**
@@ -60,5 +64,31 @@ class InterfaceMakeCommand extends GeneratorCommand
     protected function getNameInput(): string
     {
         return trim($this->argument('name')) . $this->type;
+    }
+
+    /**
+     * Replace the namespace for the given stub.
+     *
+     * @param  string  $stub
+     * @param  string  $name
+     * @return $this
+     */
+    protected function replaceNamespace(&$stub, $name)
+    {
+        parent::replaceNamespace($stub, $name);
+
+        $stub = str_replace(
+            [
+                'DummyContractsRepositoryNamespace',
+                'DummyContractsNamespace',
+            ],
+            [
+                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\')).'\\'.config('repository.repository_path'),
+                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\'))
+            ],
+            $stub
+        );
+
+        return $this;
     }
 }
