@@ -2,7 +2,9 @@
 
 namespace DummyNamespace;
 
-interface DummyClass
+use DummyContractsRepositoryNamespace;
+
+interface DummyClass extends BaseRepositoryInterface
 {
     //
 }

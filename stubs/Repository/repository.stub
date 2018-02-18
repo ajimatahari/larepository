@@ -2,9 +2,21 @@
 
 namespace DummyNamespace;
 
-use InterfaceNamespaceDummyDummyInterface;
+use InterfaceNamespaceDummy\DummyInterface;
+use DummyBaseRepositoryNamespace;
 
-class DummyClass implements DummyInterface
+/**
+* Class DummyClass
+*/
+class DummyClass extends DummyBaseRepository implements DummyInterface
 {
-    //
+     /**
+     * Returns name of provided model.
+     *
+     * @return string
+     */
+    public function getModel(): string
+    {
+        return \DummyModelNamespace::class;
+    }
 }
