@@ -3,7 +3,6 @@
 namespace Mola\Larepository\Tests;
 
 
-use Illuminate\Support\Facades\Config;
 use Mola\Larepository\LarepositoryServiceProvider;
 
 abstract class TestCase extends \Orchestra\Testbench\TestCase
