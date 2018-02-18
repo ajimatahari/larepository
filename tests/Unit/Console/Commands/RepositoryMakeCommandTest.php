@@ -159,11 +159,11 @@ class RepositoryMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn('stub');
         $this->filesMock
-            ->get(Argument::containingString($this->app->path().'/'.config('repository.provider_path', 'Providers').'/'.RepositoryMakeCommand::$providerName.'.php'))
+            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'))
             ->shouldBeCalled()
             ->willReturn('service provider');
         $this->filesMock
-            ->put(Argument::containingString($this->app->path().'/'.config('repository.provider_path', 'Providers').'/'.RepositoryMakeCommand::$providerName.'.php'), 'service provider')
+            ->put(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'), 'service provider')
             ->shouldBeCalled();
 
         $this->subject
@@ -220,11 +220,11 @@ class RepositoryMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn('stub');
         $this->filesMock
-            ->get(Argument::containingString($this->app->path().'/'.config('repository.provider_path').'/'.RepositoryMakeCommand::$providerName))
+            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path') . '/' . RepositoryMakeCommand::$providerName))
             ->shouldBeCalled()
             ->willReturn('* @var array');
         $this->filesMock
-            ->put(Argument::containingString($this->app->path().'/'.config('repository.provider_path').'/'.RepositoryMakeCommand::$providerName), Argument::containingString('* @var array'))
+            ->put(Argument::containingString($this->app->path() . '/' . config('repository.provider_path') . '/' . RepositoryMakeCommand::$providerName), Argument::containingString('* @var array'))
             ->shouldBeCalled();
 
         $this->subject
@@ -261,7 +261,7 @@ class RepositoryMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/'.config('repository.repository_path').'/FooRepository.php'))
+            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path') . '/FooRepository.php'))
             ->shouldBeCalled()
             ->willReturn(false);
         $this->inputMock
@@ -325,7 +325,7 @@ class RepositoryMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/'.config('repository.repository_path').'/FooRepository.php'))
+            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path') . '/FooRepository.php'))
             ->shouldBeCalled()
             ->willReturn(false);
         $this->inputMock
