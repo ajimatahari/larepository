@@ -21,6 +21,7 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
         $app['config']->set('repository.repository_path', getenv('REPOSITORY_PATH'));
         $app['config']->set('repository.model_path', getenv('MODEL_PATH'));
         $app['config']->set('repository.contracts_path', getenv('CONTRACTS_PATH'));
+        $app['config']->set('repository.provider_path', getenv('PROVIDER_PATH'));
     }
 
     /**
