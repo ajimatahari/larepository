@@ -1,4 +1,5 @@
 <?php
+
 namespace Tests\Unit\Console\Commands;
 
 use Illuminate\Filesystem\Filesystem;
@@ -10,13 +11,13 @@ use Prophecy\Prophecy\ProphecyInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
 /**
-* InterfaceMakeCommandTest
-**/
+ * InterfaceMakeCommandTest
+ **/
 class InterfaceMakeCommandTest extends TestCase
 {
     /**
-    * @var InterfaceMakeCommand|MockObject
-    **/
+     * @var InterfaceMakeCommand|MockObject
+     **/
     protected $subject;
     /**
      * @var Filesystem|ProphecyInterface
@@ -57,8 +58,8 @@ class InterfaceMakeCommandTest extends TestCase
     }
 
     /**
-    * @test
-    **/
+     * @test
+     **/
     public function handleShouldReturnErrorMessageAndReturnIfInterfaceAlreadyExists()
     {
         $this->inputMock
@@ -67,7 +68,7 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo');
 
         $this->filesMock
-            ->exists($this->app->path().'/'.config('repository.contracts_path').'/FooInterface.php')
+            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
             ->shouldBeCalled()
             ->willReturn(true);
 
@@ -80,8 +81,8 @@ class InterfaceMakeCommandTest extends TestCase
     }
 
     /**
-    * @test
-    **/
+     * @test
+     **/
     public function handleShouldReturnSuccessMessageIfInterfaceWasCreated()
     {
         $this->inputMock
@@ -90,11 +91,11 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo');
 
         $this->filesMock
-            ->exists($this->app->path().'/'.config('repository.contracts_path').'/FooInterface.php')
+            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
             ->shouldBeCalled()
             ->willReturn(false);
         $this->filesMock
-            ->isDirectory($this->app->path().'/'.config('repository.contracts_path'))
+            ->isDirectory($this->app->path() . '/' . config('repository.contracts_path'))
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
@@ -102,7 +103,7 @@ class InterfaceMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock
-            ->put($this->app->path().'/'.config('repository.contracts_path').'/FooInterface.php', 'interface stub')
+            ->put($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php', 'interface stub')
             ->shouldBeCalled();
 
         $this->subject
@@ -114,8 +115,8 @@ class InterfaceMakeCommandTest extends TestCase
     }
 
     /**
-    * @test
-    **/
+     * @test
+     **/
     public function handleShouldReturnSuccessMessageIfRepositoryInterfaceWasCreated()
     {
         $this->inputMock
@@ -124,11 +125,11 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo', 'Foo', 'Repositories\\Foo');
 
         $this->filesMock
-            ->exists($this->app->path().'/'.config('repository.contracts_path').'/FooInterface.php')
+            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
             ->shouldBeCalled()
             ->willReturn(false);
         $this->filesMock
-            ->isDirectory($this->app->path().'/'.config('repository.contracts_path'))
+            ->isDirectory($this->app->path() . '/' . config('repository.contracts_path'))
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
@@ -136,7 +137,7 @@ class InterfaceMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock
-            ->put($this->app->path().'/'.config('repository.contracts_path').'/FooInterface.php', 'interface stub')
+            ->put($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php', 'interface stub')
             ->shouldBeCalled();
 
         $this->subject

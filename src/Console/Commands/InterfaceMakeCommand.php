@@ -4,8 +4,6 @@ namespace Mola\Larepository\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
 use Mola\Larepository\LarepositoryServiceProvider;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 
 class InterfaceMakeCommand extends GeneratorCommand
 {
@@ -69,8 +67,8 @@ class InterfaceMakeCommand extends GeneratorCommand
     /**
      * Replace the namespace for the given stub.
      *
-     * @param  string  $stub
-     * @param  string  $name
+     * @param  string $stub
+     * @param  string $name
      * @return $this
      */
     protected function replaceNamespace(&$stub, $name)
@@ -83,7 +81,7 @@ class InterfaceMakeCommand extends GeneratorCommand
                 'DummyContractsNamespace',
             ],
             [
-                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\')).'\\'.config('repository.repository_path'),
+                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\')) . '\\' . config('repository.repository_path'),
                 $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\'))
             ],
             $stub
