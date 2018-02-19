@@ -51,7 +51,10 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
-        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub';
+        return LarepositoryServiceProvider::$packageLocation
+            . DIRECTORY_SEPARATOR . 'stubs'
+            . DIRECTORY_SEPARATOR . 'Repository'
+            . DIRECTORY_SEPARATOR . 'repository.stub';
     }
 
     /**
@@ -61,7 +64,10 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getBaseStub(): string
     {
-        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-base.stub';
+        return LarepositoryServiceProvider::$packageLocation
+            . DIRECTORY_SEPARATOR . 'stubs'
+            . DIRECTORY_SEPARATOR . 'Repository'
+            . DIRECTORY_SEPARATOR . 'repository-base.stub';
     }
 
     /**
@@ -71,7 +77,11 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getBaseInterfaceStub(): string
     {
-        return LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-base.interface.stub';
+        return LarepositoryServiceProvider::$packageLocation
+            . DIRECTORY_SEPARATOR
+            . 'stubs' . DIRECTORY_SEPARATOR
+            . 'Repository' . DIRECTORY_SEPARATOR
+            . 'repository-base.interface.stub';
     }
 
     /**
