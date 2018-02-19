@@ -68,7 +68,11 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo');
 
         $this->filesMock
-            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
+            ->exists(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php'
+            )
             ->shouldBeCalled()
             ->willReturn(true);
 
@@ -91,19 +95,34 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo');
 
         $this->filesMock
-            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
+            ->exists(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php'
+            )
             ->shouldBeCalled()
             ->willReturn(false);
         $this->filesMock
-            ->isDirectory($this->app->path() . '/' . config('repository.contracts_path'))
+            ->isDirectory(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+            )
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/interface.stub')
+            ->get(LarepositoryServiceProvider::$packageLocation
+                . DIRECTORY_SEPARATOR . 'stubs'
+                . DIRECTORY_SEPARATOR . 'Repository'
+                . DIRECTORY_SEPARATOR . 'interface.stub')
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock
-            ->put($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php', 'interface stub')
+            ->put(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php',
+                'interface stub'
+            )
             ->shouldBeCalled();
 
         $this->subject
@@ -125,19 +144,30 @@ class InterfaceMakeCommandTest extends TestCase
             ->willReturn('Foo', 'Foo', 'Repositories\\Foo');
 
         $this->filesMock
-            ->exists($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php')
+            ->exists(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php')
             ->shouldBeCalled()
             ->willReturn(false);
         $this->filesMock
-            ->isDirectory($this->app->path() . '/' . config('repository.contracts_path'))
+            ->isDirectory($this->app->path() . DIRECTORY_SEPARATOR . config('repository.contracts_path'))
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.interface.stub')
+            ->get(LarepositoryServiceProvider::$packageLocation
+                . DIRECTORY_SEPARATOR . 'stubs'
+                . DIRECTORY_SEPARATOR . 'Repository'
+                . DIRECTORY_SEPARATOR . 'repository.interface.stub')
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock
-            ->put($this->app->path() . '/' . config('repository.contracts_path') . '/FooInterface.php', 'interface stub')
+            ->put(
+                $this->app->path()
+                . DIRECTORY_SEPARATOR . config('repository.contracts_path')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php',
+                'interface stub'
+            )
             ->shouldBeCalled();
 
         $this->subject
