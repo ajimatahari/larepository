@@ -8,3 +8,6 @@ install: composer install --dev --no-interaction
 script:
   - mkdir -p build/logs
   - php vendor/bin/phpunit -c phpunit.dist.xml --coverage-clover build/logs/clover.xml
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls
