@@ -4,8 +4,122 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4c71bf67a81385a830493364fe2025f4",
-    "packages": [],
+    "content-hash": "eca5d800d1e176f8a3166afe54119670",
+    "packages": [
+        {
+            "name": "hamcrest/hamcrest-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/hamcrest/hamcrest-php.git",
+                "reference": "be5380f32221c57d4418617738108c5cac5ae78e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/hamcrest/hamcrest-php/zipball/be5380f32221c57d4418617738108c5cac5ae78e",
+                "reference": "be5380f32221c57d4418617738108c5cac5ae78e",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.3|^7.0"
+            },
+            "replace": {
+                "cordoval/hamcrest-php": "*",
+                "davedevelopment/hamcrest-php": "*",
+                "kodova/hamcrest-php": "*"
+            },
+            "require-dev": {
+                "phpunit/php-file-iterator": "^1.4",
+                "phpunit/phpunit": ">=4.8.35 <5|>=5.4.3 <6",
+                "satooshi/php-coveralls": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "classmap": [
+                    "hamcrest"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "This is the PHP port of Hamcrest Matchers",
+            "keywords": [
+                "test"
+            ],
+            "time": "2017-11-15 14:10:08"
+        },
+        {
+            "name": "mockery/mockery",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mockery/mockery.git",
+                "reference": "b5f41989e1b202322cea242c5c221677a9c4412e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/b5f41989e1b202322cea242c5c221677a9c4412e",
+                "reference": "b5f41989e1b202322cea242c5c221677a9c4412e",
+                "shasum": ""
+            },
+            "require": {
+                "hamcrest/hamcrest-php": "~2.0",
+                "lib-pcre": ">=7.0",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.7.10|~6.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Mockery": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Pádraic Brady",
+                    "email": "padraic.brady@gmail.com",
+                    "homepage": "http://blog.astrumfutura.com"
+                },
+                {
+                    "name": "Dave Marshall",
+                    "email": "dave.marshall@atstsolutions.co.uk",
+                    "homepage": "http://davedevelopment.co.uk"
+                }
+            ],
+            "description": "Mockery is a simple yet flexible PHP mock object framework",
+            "homepage": "https://github.com/mockery/mockery",
+            "keywords": [
+                "BDD",
+                "TDD",
+                "library",
+                "mock",
+                "mock objects",
+                "mockery",
+                "stub",
+                "test",
+                "test double",
+                "testing"
+            ],
+            "time": "2018-02-19 07:28:47"
+        }
+    ],
     "packages-dev": [
         {
             "name": "doctrine/inflector",
@@ -332,7 +446,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2018-02-14T11:17:26+00:00"
+            "time": "2018-02-14 11:17:26"
         },
         {
             "name": "laravel/framework",
@@ -466,7 +580,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-02-14T02:43:11+00:00"
+            "time": "2018-02-14 02:43:11"
         },
         {
             "name": "league/flysystem",
@@ -775,7 +889,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-02-13T21:36:11+00:00"
+            "time": "2018-02-13 21:36:11"
         },
         {
             "name": "orchestra/testbench",
@@ -897,7 +1011,7 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2018-02-14T01:14:59+00:00"
+            "time": "2018-02-14 01:14:59"
         },
         {
             "name": "paragonie/random_compat",
@@ -1193,7 +1307,7 @@
                     "email": "me@mikevanriel.com"
                 }
             ],
-            "time": "2018-02-12T14:33:22+00:00"
+            "time": "2018-02-12 14:33:22"
         },
         {
             "name": "phpspec/prophecy",
@@ -2491,7 +2605,7 @@
                 "mail",
                 "mailer"
             ],
-            "time": "2018-02-14T07:46:01+00:00"
+            "time": "2018-02-14 07:46:01"
         },
         {
             "name": "symfony/console",
@@ -3090,7 +3204,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2018-02-12T17:55:00+00:00"
+            "time": "2018-02-12 17:55:00"
         },
         {
             "name": "symfony/routing",
@@ -3168,7 +3282,7 @@
                 "uri",
                 "url"
             ],
-            "time": "2018-02-12T18:00:05+00:00"
+            "time": "2018-02-12 18:00:05"
         },
         {
             "name": "symfony/translation",
@@ -3497,7 +3611,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "mockery/mockery": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
