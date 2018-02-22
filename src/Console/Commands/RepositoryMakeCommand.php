@@ -14,7 +14,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected $signature = 'make:repository 
                             {name : The name of the new repository}
-                            {--model= : Name of the model to use in the repository}';
+                            {model : Name of the model to use in the repository}';
 
     /**
      * The console command description.
@@ -172,7 +172,7 @@ class RepositoryMakeCommand extends GeneratorCommand
     {
         return $this->rootNamespace()
             . $this->getModelPath()
-            . $this->option('model');
+            . $this->argument('model');
     }
 
     /**
@@ -196,7 +196,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     public function handle()
     {
-        if (!$this->hasOption('model') || !$this->modelClassExists()) {
+        if (!$this->hasArgument('model') || !$this->modelClassExists()) {
             $this->error('Model does not exist! Please provide correct namespace.');
             return;
         }
@@ -308,7 +308,11 @@ class RepositoryMakeCommand extends GeneratorCommand
         $editedClass = str_replace_first($needle, $newEntry, $provider);
 
         if (!empty($registerLoop)) {
-            $editedClass = str_replace_first(str_after($editedClass, "function register()\n"), "\t{\n$registerLoop\n\t}\n}", $editedClass);
+            $editedClass = str_replace_first(
+                str_after($editedClass, "function register()\n"),
+                "\t{\n$registerLoop\n\t}\n}",
+                $editedClass
+            );
         }
 
         // Place edited class at providers path
@@ -366,7 +370,10 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     private function getBaseRepositoryInterfaceNamespace(): string
     {
-        return $this->rootNamespace() . $this->getContractPath() . "\\" . $this->getRepositoryPath() . '\\' . self::$baseRepositoryName . 'Interface';
+        return $this->rootNamespace()
+            . $this->getContractPath()
+            . "\\" . $this->getRepositoryPath()
+            . '\\' . self::$baseRepositoryName . 'Interface';
     }
 
     /**
@@ -386,7 +393,13 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     private function createBaseRepositoryClass()
     {
-        $this->files->put($this->getPath($this->getBaseRepositoryNamespace()), $this->buildBaseRepo($this->getBaseRepositoryNamespace(), $this->getBaseStub()));
+        $this->files->put(
+            $this->getPath($this->getBaseRepositoryNamespace()),
+            $this->buildBaseRepo(
+                $this->getBaseRepositoryNamespace(),
+                $this->getBaseStub()
+            )
+        );
     }
 
     /**
@@ -396,6 +409,12 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     private function createBaseRepositoryInterface()
     {
-        $this->files->put($this->getPath($this->getBaseRepositoryInterfaceNamespace()), $this->buildBaseRepo($this->getBaseRepositoryInterfaceNamespace(), $this->getBaseInterfaceStub()));
+        $this->files->put(
+            $this->getPath($this->getBaseRepositoryInterfaceNamespace()),
+            $this->buildBaseRepo(
+                $this->getBaseRepositoryInterfaceNamespace(),
+                $this->getBaseInterfaceStub()
+            )
+        );
     }
 }
