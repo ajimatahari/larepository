@@ -61,11 +61,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldReturnErrorMessageIfProvidedModelDoesNotExist()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path()))
@@ -86,7 +86,7 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldReturnErrorMessageIfModelIsNotProvided()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(false);
 
@@ -104,11 +104,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldReturnIfParentHandleReturnsFalse()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path()))
@@ -133,11 +133,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldCreateInterfaceWithProvidedName()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path()))
@@ -186,11 +186,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldCreateBaseRepositoryAndInterfaceIfNotExist()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path()))
@@ -250,11 +250,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldAddBindingsToServiceProviderArray()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path() . '/.php'))
@@ -314,11 +314,11 @@ class RepositoryMakeCommandTest extends TestCase
     public function handleShouldCallMakeProviderAndAddArrayWithRepositoryBindings()
     {
         $this->inputMock
-            ->hasOption('model')
+            ->hasArgument('model')
             ->shouldBeCalled()
             ->willReturn(true);
         $this->inputMock
-            ->getOption('model')
+            ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path() . '/.php'))
