@@ -384,7 +384,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @return void
      */
-    private function createBaseRepositoryClass(): void
+    private function createBaseRepositoryClass()
     {
         $this->files->put($this->getPath($this->getBaseRepositoryNamespace()), $this->buildBaseRepo($this->getBaseRepositoryNamespace(), $this->getBaseStub()));
     }
@@ -394,7 +394,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @return void
      */
-    private function createBaseRepositoryInterface(): void
+    private function createBaseRepositoryInterface()
     {
         $this->files->put($this->getPath($this->getBaseRepositoryInterfaceNamespace()), $this->buildBaseRepo($this->getBaseRepositoryInterfaceNamespace(), $this->getBaseInterfaceStub()));
     }

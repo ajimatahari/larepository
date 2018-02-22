@@ -25,3 +25,4 @@ fabric.properties
 composer.phar
 /vendor/
 phpunit.xml
+build/
