@@ -284,6 +284,10 @@ class RepositoryMakeCommand extends GeneratorCommand
         $providerPath = $this->retrieveProviderPath();
         $newBindings = $this->buildBindingsString();
 
+        // Place new array entry at beginning of bindings-array
+        $needle = 'repositoryBindings = [';
+        $newEntry = "$needle\n        $newBindings,";
+
         if (!$this->files->exists($providerPath)) {
             // Crete new provider if not already exist
             $this->call('make:provider', [
@@ -296,10 +300,6 @@ class RepositoryMakeCommand extends GeneratorCommand
 
             // Add loop to providers register-method to add bindings from array
             $registerLoop = "\t\tif (!empty(\$this->repositoryBindings)) {\n\t\t\tforeach(\$this->repositoryBindings as \$abstract => \$concrete) {\n\t\t\t\t\$this->app->bind(\$abstract, \$concrete);\n\t\t\t}\n\t\t}";
-        } else {
-            // Place new array entry at beginning of bindings-array
-            $needle = 'repositoryBindings = [';
-            $newEntry = "$needle\n        $newBindings,";
         }
 
         $provider = $this->files->get($providerPath);
