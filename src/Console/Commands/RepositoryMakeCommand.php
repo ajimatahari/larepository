@@ -206,7 +206,7 @@ class RepositoryMakeCommand extends GeneratorCommand
         }
 
         $this->call('make:interface', [
-            'name' => 'Repositories\\' . $this->getNameInput()
+            'name' => config('repository.repository_path', 'Repositories') . '\\' . $this->getNameInput()
         ]);
 
         if (!$this->baseRepoExists()) {
