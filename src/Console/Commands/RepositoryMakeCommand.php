@@ -155,7 +155,9 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function getInterfaceNamespace(): string
     {
-        $specificNamespace = !empty($this->getNamespace($this->getNameInput())) ? '\\' . $this->getNamespace($this->getNameInput()) : '';
+        $specificNamespace = !empty($this->getNamespace($this->getNameInput()))
+            ? '\\' . $this->getNamespace($this->getNameInput())
+            : '';
 
         return $this->rootNamespace()
             . $this->getContractPath()
