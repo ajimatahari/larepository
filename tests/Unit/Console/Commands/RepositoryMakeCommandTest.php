@@ -146,7 +146,7 @@ class RepositoryMakeCommandTest extends TestCase
         $this->inputMock
             ->getArgument('name')
             ->shouldBeCalled()
-            ->willReturn('Foo');
+            ->willReturn('FooNamespace\\Foo');
         $this->filesMock
             ->isDirectory(Argument::containingString($this->app->path()))
             ->shouldBeCalled()
@@ -174,7 +174,7 @@ class RepositoryMakeCommandTest extends TestCase
             ->expects($this->once())
             ->method('call')
             ->with('make:interface', [
-                'name' => 'Repositories\\FooRepository'
+                'name' => 'Repositories\\FooNamespace\\FooRepository'
             ]);
 
         $this->subject->handle();
