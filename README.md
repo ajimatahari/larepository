@@ -38,7 +38,7 @@ php artisan vendor:publish --provider "Mola\Larepository\LarepositoryServiceProv
 
 | Laravel  | Larepository  |
 |---|---|
-| 5.5.*  | v1.0.0  |
+| 5.5.*  | v1.0.*  |
 
 
 ## Usage
