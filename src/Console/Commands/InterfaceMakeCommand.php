@@ -89,7 +89,9 @@ class InterfaceMakeCommand extends GeneratorCommand
                 'DummyContractsNamespace',
             ],
             [
-                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\')) . '\\' . config('repository.repository_path'),
+                $this->getDefaultNamespace(
+                    rtrim($this->rootNamespace(), '\\')
+                ) . '\\' . config('repository.repository_path'),
                 $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\'))
             ],
             $stub

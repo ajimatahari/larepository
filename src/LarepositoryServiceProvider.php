@@ -27,7 +27,9 @@ class LarepositoryServiceProvider extends ServiceProvider
         self::$packageLocation = dirname(__DIR__);
 
         $this->publishes([
-            self::$packageLocation . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'repository.php' => config_path('repository.php')
+            self::$packageLocation
+            . DIRECTORY_SEPARATOR . 'config'
+            . DIRECTORY_SEPARATOR . 'repository.php' => config_path('repository.php')
         ], 'config');
 
         // Register commands
