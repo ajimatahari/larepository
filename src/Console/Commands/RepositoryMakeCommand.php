@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Mola\Larepository\Console\Commands;
 
@@ -174,7 +175,7 @@ class RepositoryMakeCommand extends GeneratorCommand
     {
         return $this->rootNamespace()
             . $this->getModelPath()
-            . $this->argument('model');
+            . '\\' . $this->argument('model');
     }
 
     /**
@@ -208,7 +209,7 @@ class RepositoryMakeCommand extends GeneratorCommand
         }
 
         $this->call('make:interface', [
-            'name' => 'Repositories\\' . $this->getNameInput()
+            'name' => config('repository.repository_path', 'Repositories') . '\\' . $this->getNameInput()
         ]);
 
         if (!$this->baseRepoExists()) {
@@ -228,7 +229,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    private function getRepositoryPath(): string
+    private function getRepositoryPath()
     {
         return config('repository.repository_path', 'Repositories');
     }
@@ -239,7 +240,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @return string
      */
-    private function getContractPath(): string
+    private function getContractPath()
     {
         return config('repository.contracts_path', 'Contracts');
     }
@@ -298,10 +299,28 @@ class RepositoryMakeCommand extends GeneratorCommand
 
             // Place array with interface-bindings at beginning of class
             $needle = '{';
-            $newEntry = "$needle\n    /**\n     * Repository interfaces and their implementation to bind.\n     *\n     * @var array\n     */\n    private \$repositoryBindings = [\n        $newBindings\n    ];\n";
+            $newEntry = <<<EOT
+$needle
+    /**
+    * Repository interfaces and their implementation to bind.
+    * @var array
+    */
+    private \$repositoryBindings = [
+        $newBindings
+    ];
+                 
+EOT;
+
 
             // Add loop to providers register-method to add bindings from array
-            $registerLoop = "\t\tif (!empty(\$this->repositoryBindings)) {\n\t\t\tforeach(\$this->repositoryBindings as \$abstract => \$concrete) {\n\t\t\t\t\$this->app->bind(\$abstract, \$concrete);\n\t\t\t}\n\t\t}";
+            $registerLoop = <<<'EOT'
+        if (!empty($this->repositoryBindings)) {
+            foreach($this->repositoryBindings as $abstract => $concrete) {
+                $this->app->bind($abstract, $concrete);
+            }
+        }
+EOT;
+
         }
 
         $provider = $this->files->get($providerPath);
@@ -311,9 +330,7 @@ class RepositoryMakeCommand extends GeneratorCommand
 
         if (!empty($registerLoop)) {
             $editedClass = str_replace_first(
-                str_after($editedClass, "function register()\n"),
-                "\t{\n$registerLoop\n\t}\n}",
-                $editedClass
+                str_after($editedClass, "function register()\n"), "\t{\n$registerLoop\n\t}\n}", $editedClass
             );
         }
 

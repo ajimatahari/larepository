@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Mola\Larepository\Console\Commands;
 
@@ -89,8 +90,9 @@ class InterfaceMakeCommand extends GeneratorCommand
                 'DummyContractsNamespace',
             ],
             [
-                $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\'))
-                    . '\\' . config('repository.repository_path', 'Repositories'),
+                $this->getDefaultNamespace(
+                    rtrim($this->rootNamespace(), '\\')
+                ) . '\\' . config('repository.repository_path'),
                 $this->getDefaultNamespace(rtrim($this->rootNamespace(), '\\'))
             ],
             $stub
