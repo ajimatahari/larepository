@@ -44,9 +44,17 @@ class LarepositoryServiceProviderTest extends TestCase
     }
 
     /**
+    * @test
+    */
+    public function itShouldHavePackageLocationPerDefault()
+    {
+        $this->assertEquals(getcwd(), $this->subject::$packageLocation);
+    }
+
+    /**
      * @test
      **/
-    public function bootShould()
+    public function bootShouldPublishConfigurationFilesOnRequest()
     {
         $this->subject::$publishes = [];
 

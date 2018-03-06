@@ -146,7 +146,7 @@ class RepositoryMakeCommandTest extends TestCase
         $this->inputMock
             ->getArgument('name')
             ->shouldBeCalled()
-            ->willReturn('Foo');
+            ->willReturn('FooNamespace\\Foo');
         $this->filesMock
             ->isDirectory(Argument::containingString($this->app->path()))
             ->shouldBeCalled()
@@ -174,7 +174,7 @@ class RepositoryMakeCommandTest extends TestCase
             ->expects($this->once())
             ->method('call')
             ->with('make:interface', [
-                'name' => 'Repositories\\FooRepository'
+                'name' => 'Repositories\\FooNamespace\\FooRepository'
             ]);
 
         $this->subject->handle();
@@ -257,11 +257,11 @@ class RepositoryMakeCommandTest extends TestCase
             ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/.php'))
+            ->exists(Argument::containingString('/.php'))
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path') . '/FooRepository.php'))
+            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path', 'Repository') . '/FooRepository.php'))
             ->shouldBeCalled()
             ->willReturn(false);
         $this->inputMock
@@ -313,6 +313,13 @@ class RepositoryMakeCommandTest extends TestCase
      */
     public function handleShouldCallMakeProviderAndAddArrayWithRepositoryBindings()
     {
+        $registerLoopString = <<<'EOT'
+        if (!empty($this->repositoryBindings)) {
+            foreach($this->repositoryBindings as $abstract => $concrete) {
+                $this->app->bind($abstract, $concrete);
+            }
+        }
+EOT;
         $this->inputMock
             ->hasArgument('model')
             ->shouldBeCalled()
@@ -321,11 +328,11 @@ class RepositoryMakeCommandTest extends TestCase
             ->getArgument('model')
             ->shouldBeCalled();
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/.php'))
+            ->exists(Argument::containingString('/.php'))
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path') . '/FooRepository.php'))
+            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path', 'Repository') . '/FooRepository.php'))
             ->shouldBeCalled()
             ->willReturn(false);
         $this->inputMock
@@ -358,7 +365,7 @@ class RepositoryMakeCommandTest extends TestCase
         $this->filesMock
             ->put(
                 Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'),
-                Argument::containingString("\t\tif (!empty(\$this->repositoryBindings)) {\n\t\t\tforeach(\$this->repositoryBindings as \$abstract => \$concrete) {\n\t\t\t\t\$this->app->bind(\$abstract, \$concrete);\n\t\t\t}\n\t\t}")
+                Argument::containingString($registerLoopString)
             )
             ->shouldBeCalled();
 
