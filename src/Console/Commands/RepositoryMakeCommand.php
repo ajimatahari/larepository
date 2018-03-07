@@ -311,7 +311,6 @@ $needle
                  
 EOT;
 
-
             // Add loop to providers register-method to add bindings from array
             $registerLoop = <<<'EOT'
         if (!empty($this->repositoryBindings)) {
@@ -320,7 +319,6 @@ EOT;
             }
         }
 EOT;
-
         }
 
         $provider = $this->files->get($providerPath);
