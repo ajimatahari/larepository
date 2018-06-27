@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Tests\Unit\Console\Commands;
 
@@ -19,25 +20,32 @@ class InterfaceMakeCommandTest extends TestCase
      * @var InterfaceMakeCommand|MockObject
      **/
     protected $subject;
+
     /**
      * @var Filesystem|ProphecyInterface
      */
     protected $filesMock;
+
     /**
      * @var InputInterface|ProphecyInterface
      */
     protected $inputMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->filesMock = $this->prophesize(Filesystem::class);
 
         $this->subject = $this->getMockBuilder(InterfaceMakeCommand::class)
-            ->setConstructorArgs([$this->filesMock->reveal()])
-            ->setMethods(['info', 'error'])
-            ->getMock();
+                              ->setConstructorArgs([$this->filesMock->reveal()])
+                              ->setMethods(
+                                  [
+                                      'info',
+                                      'error'
+                                  ]
+                              )
+                              ->getMock();
 
         $this->inputMock = $this->prophesize(InputInterface::class);
 
@@ -50,7 +58,7 @@ class InterfaceMakeCommandTest extends TestCase
         $reflectionProperty->setValue($this->subject, $this->inputMock->reveal());
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -60,7 +68,7 @@ class InterfaceMakeCommandTest extends TestCase
     /**
      * @test
      **/
-    public function handleShouldReturnErrorMessageAndReturnIfInterfaceAlreadyExists()
+    public function handleShouldReturnErrorMessageAndReturnIfInterfaceAlreadyExists(): void
     {
         $this->inputMock
             ->getArgument('name')
@@ -87,7 +95,7 @@ class InterfaceMakeCommandTest extends TestCase
     /**
      * @test
      **/
-    public function handleShouldReturnSuccessMessageIfInterfaceWasCreated()
+    public function handleShouldReturnSuccessMessageIfInterfaceWasCreated(): void
     {
         $this->inputMock
             ->getArgument('name')
@@ -110,10 +118,12 @@ class InterfaceMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation
+            ->get(
+                LarepositoryServiceProvider::$packageLocation
                 . DIRECTORY_SEPARATOR . 'stubs'
                 . DIRECTORY_SEPARATOR . 'Repository'
-                . DIRECTORY_SEPARATOR . 'interface.stub')
+                . DIRECTORY_SEPARATOR . 'interface.stub'
+            )
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock
@@ -136,7 +146,7 @@ class InterfaceMakeCommandTest extends TestCase
     /**
      * @test
      **/
-    public function handleShouldReturnSuccessMessageIfRepositoryInterfaceWasCreated()
+    public function handleShouldReturnSuccessMessageIfRepositoryInterfaceWasCreated(): void
     {
         $this->inputMock
             ->getArgument('name')
@@ -147,7 +157,8 @@ class InterfaceMakeCommandTest extends TestCase
             ->exists(
                 $this->app->path()
                 . DIRECTORY_SEPARATOR . config('repository.contracts_path')
-                . DIRECTORY_SEPARATOR . 'FooInterface.php')
+                . DIRECTORY_SEPARATOR . 'FooInterface.php'
+            )
             ->shouldBeCalled()
             ->willReturn(false);
         $this->filesMock
@@ -155,10 +166,12 @@ class InterfaceMakeCommandTest extends TestCase
             ->shouldBeCalled()
             ->willReturn(true);
         $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation
+            ->get(
+                LarepositoryServiceProvider::$packageLocation
                 . DIRECTORY_SEPARATOR . 'stubs'
                 . DIRECTORY_SEPARATOR . 'Repository'
-                . DIRECTORY_SEPARATOR . 'repository.interface.stub')
+                . DIRECTORY_SEPARATOR . 'repository.interface.stub'
+            )
             ->shouldBeCalled()
             ->willReturn('interface stub');
         $this->filesMock

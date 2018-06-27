@@ -37,19 +37,17 @@ class InterfaceMakeCommand extends GeneratorCommand
      */
     protected function getStub(): string
     {
+        $stubPrefix = '';
+
         if (str_contains($this->getNameInput(), config('repository.repository_path', 'Repositories'))) {
-            return LarepositoryServiceProvider::$packageLocation
-                . DIRECTORY_SEPARATOR
-                . 'stubs' . DIRECTORY_SEPARATOR
-                . 'Repository' . DIRECTORY_SEPARATOR
-                . 'repository.interface.stub';
+            $stubPrefix = 'repository.';
         }
 
         return LarepositoryServiceProvider::$packageLocation
             . DIRECTORY_SEPARATOR
             . 'stubs' . DIRECTORY_SEPARATOR
             . 'Repository' . DIRECTORY_SEPARATOR
-            . 'interface.stub';
+            . $stubPrefix . 'interface.stub';
     }
 
     /**
