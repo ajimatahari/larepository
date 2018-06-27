@@ -38,13 +38,13 @@ php artisan vendor:publish --provider "Mola\Larepository\LarepositoryServiceProv
 
 | Laravel  | Larepository  |
 |---|---|
-| 5.5.*  | v1.0.*  |
+| 5.5.*  | v1.\*, v2.*  |
 
 
 ## Usage
 
 The `make:repository`-command will create a new repository with an associated interface.
-The command will create an abstract base-repository with a corresponding interface as well. This base-repository contains the basic crud-methods and will be extended by all following created repositories.
+The command will create a repository with a corresponding interface as well. This repository contains only a simple method to find all records for the specific table.
 
 ## Commands
 
@@ -58,9 +58,9 @@ A command to create a repository-interface and an implementing class.
 
 The command requires a `name`-parameter which will be the name of the repository (the suffix 'Repository' will be appended automatically).
 A `Repositories`-directory will be created in the app-directory per default. The repositories will be placed there.
-The default path can be overriden via the published configuration file.
+The default path can be overridden via the published configuration file.
 
-The associated interface will be placed in the `Contracts`-directory in the app-directory per default. The default path can be overriden in the configuration file as well.
+The associated interface will be placed in the `Contracts`-directory in the app-directory per default. The default path can be overridden in the configuration file as well.
 
 The `name`-parameter might be a Namespace as well, i.e.
 ```bash
@@ -106,40 +106,9 @@ The provided name may be a namespace as well. The above command would create the
 
 The following methods are contained within every repository:
 
-#### Create
-The create method accepts an array with data to map on an eloquent-model. It returns a boolean.
-
-```php
-$isCreated = $this->repository->create(['foo' => 'bar']);
-```
-
 #### Retrieve all entries
 The `findAll`-method retrieves all records from the corresponding table. It returns the records within a [Laravel collection](https://laravel.com/docs/5.5/eloquent-collections) ([API-documentation here](https://laravel.com/api/5.5/Illuminate/Database/Eloquent/Collection.html)).
 
 ```php
 $allEntries = $this->repository->findAll();
 ```
-
-#### Retrieve single record
-The `findOne`-method retrieves a single record via a provided id. It returns an eloquent model.
-
-```php
-$singleEntries = $this->repository->findOne(123);
-```
-
-#### Update single record
-The `update`-method retrieves a single record via a provided id and updates it via the provided update data. It returns a boolean on success or failure.
-By finding the record first and then updating it the [update-events](https://laravel.com/docs/5.6/eloquent#events) are preserved.
-The method will throw a [`ModelNotFoundException`](https://laravel.com/api/5.5/Illuminate/Database/Eloquent/ModelNotFoundException.html) if no record with the provided id is found.
-
-```php
-$isUpdated = $this->repository->update(123, ['foo' => 'bar']);
-```
-#### Delete single record
-The `delete`-method deletes a single record via the provided id. It returns a boolean on success or failure.
-By finding the record first and then deleting it the [delete-events](https://laravel.com/docs/5.6/eloquent#events) are preserved.
-
-```php
-$isDeleted = $this->repository->delete(123);
-```
-
