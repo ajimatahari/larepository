@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Mola\Larepository\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Filesystem\Filesystem;
+use Mola\Larepository\File\BindingsUpdater;
 use Mola\Larepository\LarepositoryServiceProvider;
 
 class RepositoryMakeCommand extends GeneratorCommand
@@ -39,11 +41,46 @@ class RepositoryMakeCommand extends GeneratorCommand
     public static $providerName = 'RepositoryServiceProvider';
 
     /**
-     * The name of the base-repository.
-     *
-     * @var string
+     * @var BindingsUpdater
      */
-    public static $baseRepositoryName = 'BaseRepository';
+    protected $bindingsUpdater;
+
+    public function __construct(Filesystem $filesystem, BindingsUpdater $bindingsUpdater)
+    {
+        parent::__construct($filesystem);
+
+        $this->bindingsUpdater = $bindingsUpdater;
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
+        if (!$this->hasArgument('model') || !$this->modelClassExists()) {
+            $this->error('Model does not exist! Please provide correct namespace.');
+
+            return;
+        }
+
+        if (parent::handle() === false) {
+            return;
+        }
+
+        $this->call(
+            'make:interface',
+            [
+                'name' => config('repository.repository_path', 'Repositories') . '\\' . $this->getNameInput()
+            ]
+        );
+
+        $this->bindingsUpdater->createProviderBindings(
+            $this->retrieveProviderPath(),
+            $this->buildBindingsString()
+        );
+    }
 
     /**
      * Get the stub file for the generator.
@@ -56,33 +93,6 @@ class RepositoryMakeCommand extends GeneratorCommand
             . DIRECTORY_SEPARATOR . 'stubs'
             . DIRECTORY_SEPARATOR . 'Repository'
             . DIRECTORY_SEPARATOR . 'repository.stub';
-    }
-
-    /**
-     * Get the stub file for the base repository.
-     *
-     * @return string
-     */
-    protected function getBaseStub(): string
-    {
-        return LarepositoryServiceProvider::$packageLocation
-            . DIRECTORY_SEPARATOR . 'stubs'
-            . DIRECTORY_SEPARATOR . 'Repository'
-            . DIRECTORY_SEPARATOR . 'repository-base.stub';
-    }
-
-    /**
-     * Get the stub file for the base repository interface.
-     *
-     * @return string
-     */
-    protected function getBaseInterfaceStub(): string
-    {
-        return LarepositoryServiceProvider::$packageLocation
-            . DIRECTORY_SEPARATOR
-            . 'stubs' . DIRECTORY_SEPARATOR
-            . 'Repository' . DIRECTORY_SEPARATOR
-            . 'repository-base.interface.stub';
     }
 
     /**
@@ -121,15 +131,11 @@ class RepositoryMakeCommand extends GeneratorCommand
             [
                 'DummyInterface',
                 'InterfaceNamespaceDummy',
-                'DummyBaseRepositoryNamespace',
-                'DummyBaseRepository',
                 'DummyModelNamespace'
             ],
             [
                 $this->getClassFromNameInput($name) . 'Interface',
                 $this->getInterfaceNamespace(),
-                $this->getBaseRepositoryNamespace(),
-                'BaseRepository',
                 $this->getModelNamespace(),
             ],
             $stub
@@ -176,51 +182,6 @@ class RepositoryMakeCommand extends GeneratorCommand
         return $this->rootNamespace()
             . $this->getModelPath()
             . '\\' . $this->argument('model');
-    }
-
-    /**
-     * Build the class with the given name.
-     *
-     * @param  string $name
-     * @param string $stub
-     * @return string
-     */
-    private function buildBaseRepo(string $name, string $stub): string
-    {
-        $stub = $this->files->get($stub);
-
-        return $this->replaceNamespace($stub, $name)->replaceClass($stub, $name);
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
-    public function handle()
-    {
-        if (!$this->hasArgument('model') || !$this->modelClassExists()) {
-            $this->error('Model does not exist! Please provide correct namespace.');
-            return;
-        }
-
-        if (parent::handle() === false) {
-            return;
-        }
-
-        $this->call('make:interface', [
-            'name' => config('repository.repository_path', 'Repositories') . '\\' . $this->getNameInput()
-        ]);
-
-        if (!$this->baseRepoExists()) {
-            $this->createBaseRepositoryClass();
-            $this->createBaseRepositoryInterface();
-
-            $this->info('Base-repository created successfully.');
-        }
-
-        // Add abstract and implementation to provider bindings
-        $this->createProviderBindings();
     }
 
     /**
@@ -277,66 +238,6 @@ class RepositoryMakeCommand extends GeneratorCommand
     }
 
     /**
-     * Adds new entry to service providers bindings-array
-     * or creates service provider with bindings-array.
-     *
-     * @return void
-     */
-    private function createProviderBindings()
-    {
-        $providerPath = $this->retrieveProviderPath();
-        $newBindings = $this->buildBindingsString();
-
-        // Place new array entry at beginning of bindings-array
-        $needle = 'repositoryBindings = [';
-        $newEntry = "$needle\n        $newBindings,";
-
-        if (!$this->files->exists($providerPath)) {
-            // Crete new provider if not already exist
-            $this->call('make:provider', [
-                'name' => self::$providerName
-            ]);
-
-            // Place array with interface-bindings at beginning of class
-            $needle = '{';
-            $newEntry = <<<EOT
-$needle
-    /**
-    * Repository interfaces and their implementation to bind.
-    * @var array
-    */
-    private \$repositoryBindings = [
-        $newBindings
-    ];
-                 
-EOT;
-
-            // Add loop to providers register-method to add bindings from array
-            $registerLoop = <<<'EOT'
-        if (!empty($this->repositoryBindings)) {
-            foreach($this->repositoryBindings as $abstract => $concrete) {
-                $this->app->bind($abstract, $concrete);
-            }
-        }
-EOT;
-        }
-
-        $provider = $this->files->get($providerPath);
-
-        // Replace occurrence of needle in stringified provider
-        $editedClass = str_replace_first($needle, $newEntry, $provider);
-
-        if (!empty($registerLoop)) {
-            $editedClass = str_replace_first(
-                str_after($editedClass, "function register()\n"), "\t{\n$registerLoop\n\t}\n}", $editedClass
-            );
-        }
-
-        // Place edited class at providers path
-        $this->files->put($providerPath, $editedClass);
-    }
-
-    /**
      * Builds string of array entry with
      * interface/implementation-binding.
      *
@@ -347,7 +248,7 @@ EOT;
         return '\\' . $this->getInterfaceNamespace()
             . '\\' . $this->getClassFromNameInput($this->getNameInput()) . "Interface::class => \\"
             . $this->getDefaultNamespace(str_replace('\\', '', $this->rootNamespace()))
-            . '\\' . $this->getNameInput() . '::class';
+            . '\\' . $this->getNameInput() . '::class,';
     }
 
     /**
@@ -368,70 +269,5 @@ EOT;
     private function modelClassExists(): bool
     {
         return $this->files->exists($this->getPath($this->getModelNamespace()));
-    }
-
-    /**
-     * Build namespace for base repository.
-     *
-     * @return string
-     */
-    private function getBaseRepositoryNamespace(): string
-    {
-        return $this->rootNamespace() . $this->getRepositoryPath() . '\\' . self::$baseRepositoryName;
-    }
-
-    /**
-     * Build namespace for base-repository interface.
-     *
-     * @return string
-     */
-    private function getBaseRepositoryInterfaceNamespace(): string
-    {
-        return $this->rootNamespace()
-            . $this->getContractPath()
-            . "\\" . $this->getRepositoryPath()
-            . '\\' . self::$baseRepositoryName . 'Interface';
-    }
-
-    /**
-     * Check if base-repository exists.
-     *
-     * @return bool
-     */
-    private function baseRepoExists(): bool
-    {
-        return $this->files->exists($this->getPath($this->getBaseRepositoryNamespace()));
-    }
-
-    /**
-     * Creates the base-repo class-file.
-     *
-     * @return void
-     */
-    private function createBaseRepositoryClass()
-    {
-        $this->files->put(
-            $this->getPath($this->getBaseRepositoryNamespace()),
-            $this->buildBaseRepo(
-                $this->getBaseRepositoryNamespace(),
-                $this->getBaseStub()
-            )
-        );
-    }
-
-    /**
-     * Creates the base-repo interface-file.
-     *
-     * @return void
-     */
-    private function createBaseRepositoryInterface()
-    {
-        $this->files->put(
-            $this->getPath($this->getBaseRepositoryInterfaceNamespace()),
-            $this->buildBaseRepo(
-                $this->getBaseRepositoryInterfaceNamespace(),
-                $this->getBaseInterfaceStub()
-            )
-        );
     }
 }

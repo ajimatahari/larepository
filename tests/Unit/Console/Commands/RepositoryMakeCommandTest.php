@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace Mola\Larepository\Tests\Unit\Console\Commands;
 
 use Illuminate\Filesystem\Filesystem;
 use Mola\Larepository\Console\Commands\RepositoryMakeCommand;
+use Mola\Larepository\File\BindingsUpdater;
 use Mola\Larepository\LarepositoryServiceProvider;
 use Mola\Larepository\Tests\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -17,25 +19,44 @@ class RepositoryMakeCommandTest extends TestCase
      * @var RepositoryMakeCommand|MockObject
      */
     protected $subject;
+
     /**
      * @var InputInterface|ProphecyInterface
      */
     protected $inputMock;
+
+    /**
+     * @var BindingsUpdater
+     */
+    protected $bindingsUpdateMock;
+
     /**
      * @var Filesystem
      */
     private $filesMock;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->filesMock = $this->prophesize(Filesystem::class);
+        $this->bindingsUpdateMock = $this->prophesize(BindingsUpdater::class);
 
         $this->subject = $this->getMockBuilder(RepositoryMakeCommand::class)
-            ->setConstructorArgs([$this->filesMock->reveal()])
-            ->setMethods(['call', 'error', 'info'])
-            ->getMock();
+                              ->setConstructorArgs(
+                                  [
+                                      $this->filesMock->reveal(),
+                                      $this->bindingsUpdateMock->reveal()
+                                  ]
+                              )
+                              ->setMethods(
+                                  [
+                                      'call',
+                                      'error',
+                                      'info'
+                                  ]
+                              )
+                              ->getMock();
 
         $this->inputMock = $this->prophesize(InputInterface::class);
 
@@ -48,7 +69,7 @@ class RepositoryMakeCommandTest extends TestCase
         $reflectionProperty->setValue($this->subject, $this->inputMock->reveal());
     }
 
-    public function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
 
@@ -58,7 +79,7 @@ class RepositoryMakeCommandTest extends TestCase
     /**
      * @test
      */
-    public function handleShouldReturnErrorMessageIfProvidedModelDoesNotExist()
+    public function handleShouldReturnErrorMessageIfProvidedModelDoesNotExist(): void
     {
         $this->inputMock
             ->hasArgument('model')
@@ -83,7 +104,7 @@ class RepositoryMakeCommandTest extends TestCase
     /**
      * @test
      */
-    public function handleShouldReturnErrorMessageIfModelIsNotProvided()
+    public function handleShouldReturnErrorMessageIfModelIsNotProvided(): void
     {
         $this->inputMock
             ->hasArgument('model')
@@ -101,7 +122,7 @@ class RepositoryMakeCommandTest extends TestCase
     /**
      * @test
      */
-    public function handleShouldReturnIfParentHandleReturnsFalse()
+    public function handleShouldReturnIfParentHandleReturnsFalse(): void
     {
         $this->inputMock
             ->hasArgument('model')
@@ -130,7 +151,7 @@ class RepositoryMakeCommandTest extends TestCase
     /**
      * @test
      */
-    public function handleShouldCreateInterfaceWithProvidedName()
+    public function handleShouldCreateInterfaceWithProvidedName(): void
     {
         $this->inputMock
             ->hasArgument('model')
@@ -141,8 +162,8 @@ class RepositoryMakeCommandTest extends TestCase
             ->shouldBeCalled();
         $this->filesMock
             ->exists(Argument::containingString($this->app->path()))
-            ->shouldBeCalledTimes(4)
-            ->willReturn(true, false, true, true);
+            ->shouldBeCalledTimes(2)
+            ->willReturn(true, false);
         $this->inputMock
             ->getArgument('name')
             ->shouldBeCalled()
@@ -158,13 +179,6 @@ class RepositoryMakeCommandTest extends TestCase
             ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub')
             ->shouldBeCalled()
             ->willReturn('stub');
-        $this->filesMock
-            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'))
-            ->shouldBeCalled()
-            ->willReturn('service provider');
-        $this->filesMock
-            ->put(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'), 'service provider')
-            ->shouldBeCalled();
 
         $this->subject
             ->expects($this->once())
@@ -173,223 +187,24 @@ class RepositoryMakeCommandTest extends TestCase
         $this->subject
             ->expects($this->once())
             ->method('call')
-            ->with('make:interface', [
-                'name' => 'Repositories\\FooNamespace\\FooRepository'
-            ]);
-
-        $this->subject->handle();
-    }
-
-    /**
-     * @test
-     */
-    public function handleShouldCreateBaseRepositoryAndInterfaceIfNotExist()
-    {
-        $this->inputMock
-            ->hasArgument('model')
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->inputMock
-            ->getArgument('model')
-            ->shouldBeCalled();
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path()))
-            ->shouldBeCalledTimes(4)
-            ->willReturn(true, false, false, true);
-        $this->inputMock
-            ->getArgument('name')
-            ->shouldBeCalled()
-            ->willReturn('Foo');
-        $this->filesMock
-            ->isDirectory(Argument::containingString($this->app->path()))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub')
-            ->shouldBeCalled()
-            ->willReturn('stub');
-        $this->filesMock
-            ->put(Argument::containingString($this->app->path()), 'stub')
-            ->shouldBeCalledTimes(3);
-        $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-base.stub')
-            ->shouldBeCalled()
-            ->willReturn('stub');
-        $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository-base.interface.stub')
-            ->shouldBeCalled()
-            ->willReturn('stub');
-        $this->filesMock
-            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path') . '/' . RepositoryMakeCommand::$providerName))
-            ->shouldBeCalled()
-            ->willReturn('* @var array');
-        $this->filesMock
-            ->put(Argument::containingString($this->app->path() . '/' . config('repository.provider_path') . '/' . RepositoryMakeCommand::$providerName), Argument::containingString('* @var array'))
-            ->shouldBeCalled();
-
-        $this->subject
-            ->expects($this->exactly(2))
-            ->method('info')
-            ->withConsecutive(
-                ['Repository created successfully.'],
-                ['Base-repository created successfully.']
-            );
-        $this->subject
-            ->expects($this->once())
-            ->method('call')
-            ->with('make:interface', [
-                'name' => 'Repositories\\FooRepository'
-            ]);
-
-        $this->subject->handle();
-    }
-
-    /**
-     * @test
-     */
-    public function handleShouldAddBindingsToServiceProviderArray()
-    {
-        $this->inputMock
-            ->hasArgument('model')
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->inputMock
-            ->getArgument('model')
-            ->shouldBeCalled();
-        $this->filesMock
-            ->exists(Argument::containingString('/.php'))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path', 'Repository') . '/FooRepository.php'))
-            ->shouldBeCalled()
-            ->willReturn(false);
-        $this->inputMock
-            ->getArgument('name')
-            ->shouldBeCalled()
-            ->willReturn('Foo');
-        $this->filesMock
-            ->isDirectory(Argument::containingString($this->app->path()))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub')
-            ->shouldBeCalled()
-            ->willReturn('stub');
-        $this->filesMock
-            ->put(Argument::containingString($this->app->path()), 'stub')
-            ->shouldBeCalled();
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path()))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'))
-            ->shouldBeCalled()
-            ->willReturn('repositoryBindings = [');
-        $this->filesMock
-            ->put(
-                Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'),
-                Argument::containingString("repositoryBindings = [\n")
-            )
-            ->shouldBeCalled();
-
-        $this->subject
-            ->expects($this->once())
-            ->method('info')
-            ->with('Repository created successfully.');
-        $this->subject
-            ->expects($this->once())
-            ->method('call')
-            ->with('make:interface', [
-                'name' => 'Repositories\\FooRepository'
-            ]);
-
-        $this->subject->handle();
-    }
-
-    /**
-     * @test
-     */
-    public function handleShouldCallMakeProviderAndAddArrayWithRepositoryBindings()
-    {
-        $registerLoopString = <<<'EOT'
-        if (!empty($this->repositoryBindings)) {
-            foreach($this->repositoryBindings as $abstract => $concrete) {
-                $this->app->bind($abstract, $concrete);
-            }
-        }
-EOT;
-        $this->inputMock
-            ->hasArgument('model')
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->inputMock
-            ->getArgument('model')
-            ->shouldBeCalled();
-        $this->filesMock
-            ->exists(Argument::containingString('/.php'))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path', 'Repository') . '/FooRepository.php'))
-            ->shouldBeCalled()
-            ->willReturn(false);
-        $this->inputMock
-            ->getArgument('name')
-            ->shouldBeCalled()
-            ->willReturn('Foo');
-        $this->filesMock
-            ->isDirectory(Argument::containingString($this->app->path()))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->get(LarepositoryServiceProvider::$packageLocation . '/stubs/Repository/repository.stub')
-            ->shouldBeCalled()
-            ->willReturn('stub');
-        $this->filesMock
-            ->put(Argument::containingString($this->app->path()), 'stub')
-            ->shouldBeCalled();
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.repository_path', 'Repositories') . '/BaseRepository.php'))
-            ->shouldBeCalled()
-            ->willReturn(true);
-        $this->filesMock
-            ->exists(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'))
-            ->shouldBeCalled()
-            ->willReturn(false);
-        $this->filesMock
-            ->get(Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'))
-            ->shouldBeCalled()
-            ->willReturn('repositoryBindings = [');
-        $this->filesMock
-            ->put(
-                Argument::containingString($this->app->path() . '/' . config('repository.provider_path', 'Providers') . '/' . RepositoryMakeCommand::$providerName . '.php'),
-                Argument::containingString($registerLoopString)
-            )
-            ->shouldBeCalled();
-
-        $this->subject
-            ->expects($this->once())
-            ->method('info')
-            ->with('Repository created successfully.');
-        $this->subject
-            ->expects($this->exactly(2))
-            ->method('call')
-            ->withConsecutive(
+            ->with(
+                'make:interface',
                 [
-                    'make:interface',
-                    [
-                        'name' => 'Repositories\\FooRepository'
-                    ]
-                ],
-                [
-                    'make:provider',
-                    [
-                        'name' => RepositoryMakeCommand::$providerName
-                    ]
+                    'name' => 'Repositories\\FooNamespace\\FooRepository'
                 ]
             );
+
+        $this->bindingsUpdateMock
+            ->createProviderBindings(
+                Argument::containingString(
+                    $this->app->path() . '/' . config(
+                        'repository.provider_path',
+                        'Providers'
+                    ) . '/' . RepositoryMakeCommand::$providerName . '.php'
+                ),
+                Argument::containingString('FooRepository')
+            )
+            ->willReturn(true);
 
         $this->subject->handle();
     }

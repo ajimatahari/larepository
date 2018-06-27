@@ -7,5 +7,7 @@ return [
 
     'contracts_path' => 'Contracts',
 
-    'provider_path' => 'Providers'
+    'provider_path' => 'Providers',
+    
+    'bindings_array_name' => 'repositoryBindings'
 ];
