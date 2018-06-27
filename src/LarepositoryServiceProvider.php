@@ -27,17 +27,22 @@ class LarepositoryServiceProvider extends ServiceProvider
     {
         self::$packageLocation = dirname(__DIR__);
 
-        $this->publishes([
-            self::$packageLocation . DIRECTORY_SEPARATOR . 'config'
-            . DIRECTORY_SEPARATOR . 'repository.php' => config_path('repository.php')
-        ], 'config');
+        $this->publishes(
+            [
+                self::$packageLocation . DIRECTORY_SEPARATOR . 'config'
+                . DIRECTORY_SEPARATOR . 'repository.php' => config_path('repository.php')
+            ],
+            'config'
+        );
 
         // Register commands
         if ($this->app->runningInConsole()) {
-            $this->commands([
-                InterfaceMakeCommand::class,
-                RepositoryMakeCommand::class
-            ]);
+            $this->commands(
+                [
+                    InterfaceMakeCommand::class,
+                    RepositoryMakeCommand::class
+                ]
+            );
         }
     }
 

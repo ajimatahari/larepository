@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Mola\Larepository\Tests\Unit\Providers;
 
@@ -31,9 +32,14 @@ class LarepositoryServiceProviderTest extends TestCase
         $this->appMock = \Mockery::mock(\Illuminate\Foundation\Application::class)->makePartial();
 
         $this->subject = $this->getMockBuilder(LarepositoryServiceProvider::class)
-            ->setConstructorArgs([$this->appMock])
-            ->setMethods(['runningInConsole', 'commands'])
-            ->getMock();
+                              ->setConstructorArgs([$this->appMock])
+                              ->setMethods(
+                                  [
+                                      'runningInConsole',
+                                      'commands'
+                                  ]
+                              )
+                              ->getMock();
     }
 
     public function tearDown()
@@ -44,8 +50,8 @@ class LarepositoryServiceProviderTest extends TestCase
     }
 
     /**
-    * @test
-    */
+     * @test
+     */
     public function itShouldHavePackageLocationPerDefault()
     {
         $this->assertEquals(getcwd(), $this->subject::$packageLocation);
@@ -64,7 +70,9 @@ class LarepositoryServiceProviderTest extends TestCase
         $this->assertEquals(
             [
                 get_class($this->subject) => [
-                    $this->subject::$packageLocation . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'repository.php' => config_path('repository.php')
+                    $this->subject::$packageLocation . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'repository.php' => config_path(
+                        'repository.php'
+                    )
                 ]
             ],
             $this->subject::$publishes
@@ -84,10 +92,12 @@ class LarepositoryServiceProviderTest extends TestCase
         $this->subject
             ->expects($this->once())
             ->method('commands')
-            ->with([
-                InterfaceMakeCommand::class,
-                RepositoryMakeCommand::class
-            ]);
+            ->with(
+                [
+                    InterfaceMakeCommand::class,
+                    RepositoryMakeCommand::class
+                ]
+            );
 
         $this->subject->boot();
     }
@@ -105,10 +115,12 @@ class LarepositoryServiceProviderTest extends TestCase
         $this->subject
             ->expects($this->never())
             ->method('commands')
-            ->with([
-                InterfaceMakeCommand::class,
-                RepositoryMakeCommand::class
-            ]);
+            ->with(
+                [
+                    InterfaceMakeCommand::class,
+                    RepositoryMakeCommand::class
+                ]
+            );
 
         $this->subject->boot();
     }

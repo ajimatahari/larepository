@@ -1,22 +1,39 @@
 <?php
+declare(strict_types=1);
 
 namespace DummyNamespace;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use InterfaceNamespaceDummy\DummyInterface;
-use DummyBaseRepositoryNamespace;
 
 /**
 * Class DummyClass
 */
-class DummyClass extends DummyBaseRepository implements DummyInterface
+class DummyClass implements DummyInterface
 {
-     /**
-     * Returns name of provided model.
+    /**
+     * The builder to be used for database interaction.
      *
-     * @return string
+     * @var Builder
      */
-    public function getModel(): string
+    protected $queryBuilder;
+
+    /**
+     * DummyClass constructor
+     */
+    public function __construct()
     {
-        return \DummyModelNamespace::class;
+        $this->queryBuilder = \DummyModelNamespace::query();
+    }
+
+    /**
+     * Retrieves all entries.
+     *
+     * @return Collection
+     */
+    public function findAll(): Collection
+    {
+        return $this->queryBuilder->get();
     }
 }
